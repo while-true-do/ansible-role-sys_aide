@@ -3,10 +3,8 @@
 
 - name: Initialize AIDE DB
   command: "aide --init"
+  changed_when: true
   become: true
-  when:
-    - not aide_init.stat.exists|bool
-    - wtd_sys_aide_package_state != "absent"
   tags:
     - aide
     - initialization
@@ -14,11 +12,12 @@
     - system
 
 - name: Move AIDE DB
-  command: mv {{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_new_name }} {{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_name }}
+  copy:
+    src: "{{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_new_name }}"
+    dest: "{{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_name }}"
+    backup: true
+    remote_src: true
   become: true
-  when:
-    - not aide_init.stat.exists|bool
-    - wtd_sys_aide_package_state != "absent"
   tags:
     - aide
     - initialization
