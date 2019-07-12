@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=AIDE Check Timer
+
+[Timer]
+OnCalendar={{ wtd_sys_aide_conf_times }}
+Unit=aide-check.service
+Persistent=true
+
+[Install]
+WantedBy=multi-user.target

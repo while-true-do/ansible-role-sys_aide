@@ -1,0 +1,94 @@
+---
+# tasks file for while_true_do.sys_aide
+
+- name: Manage AIDE Packages
+  package:
+    name: "{{ wtd_sys_aide_package }}"
+    state: "{{ wtd_sys_aide_package_state }}"
+  become: true
+  tags:
+    - aide
+    - compliance
+    - security
+    - system
+    - package
+
+- name: Manage AIDE DB Path Configuration
+  lineinfile:
+    path: "/etc/aide.conf"
+    regexp: "^database="
+    line: "database=file:@@{DBDIR}/{{ wtd_sys_aide_conf_db_name }}"
+  become: true
+  when:
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - security
+    - system
+
+- name: Manage AIDE DB New Path Configuration
+  lineinfile:
+    path: "/etc/aide.conf"
+    regexp: "^database_out="
+    line: "database_out=file:@@{DBDIR}/{{ wtd_sys_aide_conf_db_new_name }}"
+  become: true
+  when:
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - security
+    - system
+
+- name: Check AIDE Initialization
+  stat:
+    path: "{{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_name }}"
+  become: true
+  register: aide_init
+  when:
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - initialization
+    - security
+    - system
+
+- name: Include AIDE Initialization Tasks
+  include_tasks: initialize.yml
+  when:
+    - not aide_init.stat.exists|bool
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - initialization
+    - security
+    - system
+
+- name: Include AIDE cron Tasks
+  include_tasks: cron-scheduler.yml
+  when:
+    - wtd_sys_aide_conf_scheduler == "cron"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - security
+    - system
+
+- name: Include AIDE systemd Tasks
+  include_tasks: systemd-scheduler.yml
+  when:
+    - wtd_sys_aide_conf_scheduler == "systemd"
+  tags:
+    - aide
+    - compliance
+    - configuration
+    - security
+    - system

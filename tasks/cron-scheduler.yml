@@ -1,0 +1,16 @@
+---
+# tasks file for while_true_do.sys_aide
+
+- name: Manage AIDE Check Cron
+  cron:
+    name: AIDE Check
+    special_time: "{{ wtd_sys_aide_conf_times }}"
+    user: "root"
+    job: "/usr/sbin/aide --check"
+  become: true
+  tags:
+    - aide
+    - compliance
+    - cron
+    - security
+    - system

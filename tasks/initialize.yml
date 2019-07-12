@@ -1,0 +1,26 @@
+---
+# tasks file for while_true_do.sys_aide
+
+- name: Initialize AIDE DB
+  command: "aide --init"
+  become: true
+  when:
+    - not aide_init.stat.exists|bool
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - initialization
+    - security
+    - system
+
+- name: Move AIDE DB
+  command: mv {{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_new_name }} {{ wtd_sys_aide_conf_db_path }}/{{ wtd_sys_aide_conf_db_name }}
+  become: true
+  when:
+    - not aide_init.stat.exists|bool
+    - wtd_sys_aide_package_state != "absent"
+  tags:
+    - aide
+    - initialization
+    - security
+    - system

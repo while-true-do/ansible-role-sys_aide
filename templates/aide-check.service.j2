@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=AIDE Check Service
+
+[Service]
+Type=oneshot
+Nice=19
+ExecStart=/usr/sbin/aide --check
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+---
+# defaults file for while_true_do.sys_aide
+
+## Package Management
+wtd_sys_aide_package: "aide"
+# State can be present|latest|absent
+wtd_sys_aide_package_state: "present"
+
+## Configuration Management
+# DB Configuration
+wtd_sys_aide_conf_db_path: "/var/lib/aide"
+wtd_sys_aide_conf_db_name: "aide.db.gz"
+wtd_sys_aide_conf_db_new_name: "aide.db.new.gz"
+# Scheduler can be: cron|systemd|none
+wtd_sys_aide_conf_scheduler: "systemd"
+# times can be any valid time format for the scheduler
+# daily, weekly, monthly are recommended
+wtd_sys_aide_conf_times: "weekly"
